@@ -1,0 +1,22 @@
+{
+  "name": "trojanmod-server",
+  "version": "1.0.0",
+  "description": "Hosts malware for the Minecraft Trojan Mod.",
+  "main": "src/index.js",
+  "repository": "https://github.com/Dezzmeister/trojanmod-server.git",
+  "author": "Lance G.",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "tsc": "tsc",
+    "start": "tsc && node dist/server/app.js"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.8",
+    "express": "^4.17.1",
+    "prettier": "^2.1.2",
+    "prettierrc": "^0.0.0-5",
+    "typescript": "^4.0.3"
+  }
+}
