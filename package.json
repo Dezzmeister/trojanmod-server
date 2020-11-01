@@ -7,14 +7,33 @@
   "author": "Lance G.",
   "license": "MIT",
   "private": true,
-  "dependencies": {},
   "scripts": {
-    "tsc": "tsc",
-    "start": "tsc && node dist/server/app.js"
+    "build": "tsc",
+    "start": "tsc && node dist/server/app.js",
+    "start:watch": "nodemon"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "yarn start",
+    "ext": "ts"
+  },
+  "dependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.0.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.8",
+    "@types/express-fileupload": "^1.1.5",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.0",
     "prettier": "^2.1.2",
     "prettierrc": "^0.0.0-5",
     "typescript": "^4.0.3"
