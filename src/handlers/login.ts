@@ -1,6 +1,6 @@
 import { Application, Request, Response } from "express";
 import { AUTH_TOKEN_KEY, generateAuthToken, saveToken } from "../auth";
-import { LOGIN_ROUTE } from "../routes";
+import { BAD_LOGIN_ROUTE, LOGIN_ROUTE } from "../routes";
 
 // Terrible practice here
 const LANCEG_USERNAME = "lanceg";
@@ -25,11 +25,19 @@ function loginPost(req: Request, res: Response): void {
 		return;
 	}
 
-	res.send("wrong login dood");
+	res.redirect(BAD_LOGIN_ROUTE);
 	return;
+}
+
+function badLoginGet(req: Request, res: Response): void {
+	res.render("home", {
+		title: "your idiot"
+	});
+	res.status(200);
 }
 
 export function addRoutes(app: Application): void {
 	app.get(LOGIN_ROUTE, loginGet);
 	app.post(LOGIN_ROUTE, loginPost);
+	app.get(BAD_LOGIN_ROUTE, badLoginGet);
 }

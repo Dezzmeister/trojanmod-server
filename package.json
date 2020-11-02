@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "setenv:prod": "cp prod.env .env",
     "copy-files:prod": "cp src/views dist/server -r",
     "build:prod": "tsc && yarn run copy-files:prod",
     "start:prod": "yarn run build:prod && node dist/server/app.js",
