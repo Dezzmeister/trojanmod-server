@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
+import handlebars from "express-handlebars";
 import cookieParser from "cookie-parser";
-import fileUpload = require("express-fileupload");
+import * as bodyParser from "body-parser";
 import { config } from "./config";
 import { DEFAULT_ROUTE } from "./routes";
 import { authTokenMiddleware } from "./auth";
@@ -8,17 +9,25 @@ import addRoutes from "./add_routes";
 
 export const app: Application = express();
 
-app.use(cookieParser());
-app.use(authTokenMiddleware);
+export const PAYLOAD_DIR = "files/";
+const VIEWS_DIR = `${__dirname}/views`;
 
-app.use(
-	fileUpload({
-		createParentPath: true,
-		useTempFiles: true,
-		tempFileDir: "/tmp/",
-		debug: true
+app.set("view engine", "handlebars");
+app.set("views", VIEWS_DIR);
+app.engine(
+	"handlebars",
+	handlebars({
+		defaultLayout: "main"
 	})
 );
+
+app.use(cookieParser());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
+app.use(authTokenMiddleware);
+
+app.use(express.static(VIEWS_DIR));
+app.use(express.static(PAYLOAD_DIR));
 
 app.use(express.json());
 
