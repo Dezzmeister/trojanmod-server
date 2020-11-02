@@ -76,3 +76,33 @@ marquee {
 	color: blueviolet;
 	font-weight: bold;
 }
+
+.navbar {
+	display: flex;
+	justify-content: center;
+	background: #444;
+	color: #fff;
+}
+
+.navbar h1 {
+	font-size: 40px;
+	font-weight: 900;
+}
+
+.psychbg {
+	background: linear-gradient(red, blue);
+	width: 100vw;
+	height: 100vh;
+}
+
+.content {
+	display: grid;
+}
+
+.content marquee {
+	justify-self: center;
+	align-self: center;
+	color: green;
+	height: 200px;
+	font-size: 10em;
+}

@@ -8,9 +8,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "copy-files": "xcopy src\\views dist\\server\\views\\ /e /y",
-    "build": "tsc && yarn run copy-files",
-    "start": "yarn run build && node dist/server/app.js",
+    "copy-files:prod": "cp src/views dist/server -r",
+    "build:prod": "tsc && yarn run copy-files:prod",
+    "start:prod": "yarn run build:prod && node dist/server/app.js",
+    "copy-files:dev": "xcopy src\\views dist\\server\\views\\ /e /y",
+    "build:dev": "tsc && yarn run copy-files:dev",
+    "start:dev": "yarn run build:dev && node dist/server/app.js",
     "start:watch": "nodemon"
   },
   "nodemonConfig": {
@@ -21,7 +24,7 @@
     "watch": [
       "src"
     ],
-    "exec": "yarn start",
+    "exec": "yarn start:dev",
     "ext": "ts"
   },
   "dependencies": {

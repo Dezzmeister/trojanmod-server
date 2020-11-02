@@ -3,7 +3,7 @@ import handlebars from "express-handlebars";
 import cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import { config } from "./config";
-import { DEFAULT_ROUTE } from "./routes";
+import { DEFAULT_ROUTE, LOGIN_ROUTE } from "./routes";
 import { authTokenMiddleware } from "./auth";
 import addRoutes from "./add_routes";
 
@@ -33,7 +33,7 @@ app.use(express.json());
 
 app.get(DEFAULT_ROUTE, function (req: Request, res: Response): void {
 	console.log(`GET ${DEFAULT_ROUTE}`);
-	res.send("Hello chief");
+	res.redirect(LOGIN_ROUTE);
 });
 
 addRoutes(app);
