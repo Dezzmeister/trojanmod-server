@@ -15,7 +15,10 @@
     "copy-files:dev": "xcopy src\\views dist\\server\\views\\ /e /y",
     "build:dev": "tsc && yarn run copy-files:dev",
     "start:dev": "yarn run build:dev && node dist/server/app.js",
-    "start:watch": "nodemon"
+    "start:watch": "nodemon",
+    "migration:generate": "yarn run build:dev && node ./node_modules/typeorm/cli.js migration:generate -f ormconfig.json -c obama69",
+    "migrate": "yarn run build:dev && node ./node_modules/typeorm/cli.js migration:run -f ormconfig.json -c obama69",
+    "migrate:revert": "yarn run build:dev && node ./node_modules/typeorm/cli.js migration:revert -f ormconfig.json -c obama69"
   },
   "nodemonConfig": {
     "ignore": [
@@ -37,7 +40,9 @@
     "express-handlebars": "^5.2.0",
     "multer": "^1.4.2",
     "nodemon": "^2.0.6",
-    "ts-node": "^9.0.0"
+    "pg": "^8.4.2",
+    "ts-node": "^9.0.0",
+    "typeorm": "^0.2.29"
   },
   "devDependencies": {
     "@types/express-fileupload": "^1.1.5",

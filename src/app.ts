@@ -6,6 +6,7 @@ import { config } from "./config";
 import { DEFAULT_ROUTE, LOGIN_ROUTE } from "./routes";
 import { authTokenMiddleware } from "./auth";
 import addRoutes from "./add_routes";
+import { initDatabase } from "./services/database";
 
 export const app: Application = express();
 
@@ -37,6 +38,8 @@ app.get(DEFAULT_ROUTE, function (req: Request, res: Response): void {
 });
 
 addRoutes(app);
+
+initDatabase(config.database.dbName);
 
 app.listen(config.port, function () {
 	console.log(`Trojan Control Server listening on port ${config.port}`);
