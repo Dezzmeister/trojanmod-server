@@ -1,0 +1,68 @@
+<link rel="stylesheet" type="text/css" href="./views.css" />
+<script>
+    document.body.onload = onInputChanged;
+
+    function setAttribute(element, attrName, shouldHaveAttr) {
+        if (shouldHaveAttr) {
+            element.setAttribute(attrName, shouldHaveAttr);
+        } else {
+            element.removeAttribute(attrName);
+        }
+    }
+
+    function onInputChanged() {
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const firstName = document.getElementById("first_name");
+        const lastName = document.getElementById("last_name");
+        const submitButton = document.getElementById("submit-button");
+
+        const canSubmit = username.value && checkUsername(username.value) && password.value && firstName.value && lastName.value;
+        setAttribute(submitButton, "disabled", !canSubmit);
+    }
+
+    function checkUsername(username) {
+        const usernameField = document.getElementById("username");
+        const isTakenError = document.getElementById("username-taken-error");
+
+        const username = usernameField.value;
+
+        if (!username.value) {
+            return false;
+        }
+
+        const querySafeUsername = window.btoa(username);
+        const request = new XMLHttpRequest();
+
+        // TODO: Make AJAX request to see if username is taken
+        const isTaken = document.getElementById("first_name").value === "test";
+
+        setAttribute(usernameField, "haserror", isTaken);
+        setAttribute(isTakenError, "hidden", !isTaken);
+
+        return !isTaken;
+    }
+</script>
+<div class="page-row centered annoying-gradient">
+    <div class="action-box">
+        <h2>create an accounts</h2>
+        <hr style="width: 100%">
+        <form name="register" method="POST" id="register-form" class="standard-form">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required oninput="onInputChanged();" onchange="checkUsername(this.value);" />
+            <div class="errortext" id="username-taken-error" hidden>This username is taken!</div>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required oninput="onInputChanged();" />
+
+            <label for="first_name">First name</label>
+            <input type="text" name="first_name" id="first_name" required oninput="onInputChanged();" />
+
+            <label for="last_name">Last name</label>
+            <input type="text" name="last_name" id="last_name" required oninput="onInputChanged();" />
+
+            <button type="submit" name="register" id="submit-button" class="submit-button" disabled>create accounte</button>
+            <button type="button" class="submit-button" onclick="window.location.href='/'">back</button>
+        </form>
+    </div>
+</div>

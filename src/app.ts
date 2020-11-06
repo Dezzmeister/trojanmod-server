@@ -3,7 +3,7 @@ import handlebars from "express-handlebars";
 import cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import { config } from "./config";
-import { DEFAULT_ROUTE } from "./routes";
+import { DEFAULT_ROUTE, LOGIN_ROUTE, REGISTER_ROUTE } from "./routes";
 import { authTokenMiddleware } from "./auth";
 import addRoutes from "./add_routes";
 import { initDatabase } from "./services/database";
@@ -33,11 +33,12 @@ app.use(express.static(PAYLOAD_DIR));
 app.use(express.json());
 
 app.get(DEFAULT_ROUTE, function (req: Request, res: Response): void {
-	/*
 	console.log(`GET ${DEFAULT_ROUTE}`);
-	res.redirect(LOGIN_ROUTE);
-	*/
-	res.render("landing");
+	res.render("landing", {
+		title: "obama 69 websit",
+		loginRoute: LOGIN_ROUTE,
+		registerRoute: REGISTER_ROUTE
+	});
 });
 
 addRoutes(app);
