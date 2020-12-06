@@ -23,9 +23,6 @@ export class User {
 	@Column({ name: "password_hash" })
 	passwordHash!: string;
 
-	@Column({ name: "password_salt" })
-	passwordSalt!: string;
-
 	@Column({ type: "enum", enum: Role, default: Role.USER })
 	role!: Role;
 }

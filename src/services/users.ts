@@ -1,44 +1,65 @@
 import bcrypt from "bcrypt";
 import { Role, User } from "../entity/User";
+import {
+	BadPasswordError,
+	UserDoesNotExistError,
+	UserExistsError
+} from "../errors/user_errors";
 import { createEntityManager } from "./database";
 
 export interface UserData {
-	email: string;
+	username: string;
 	password: string;
 	firstName: string;
 	lastName: string;
 }
 
-const SALT_ROUNDS = 20;
+const SALT_ROUNDS = 12;
 
 export async function createUser(data: UserData): Promise<User> {
-	const { email, password, firstName, lastName } = data;
+	const { username, password, firstName, lastName } = data;
+
+	const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+	const hash = bcrypt.hashSync(password, salt);
 
 	const userData = {
-		email,
+		username,
 		firstName,
 		lastName,
-		passwordHash: "",
-		passwordSalt: "",
+		passwordHash: hash,
 		role: Role.USER
 	};
 
 	const em = await createEntityManager();
+
+	const existingUser = await em.getRepository(User).findOne({ username });
+	console.log(JSON.stringify(existingUser));
+	if (existingUser) {
+		throw new UserExistsError();
+	}
+
 	const user = await em.getRepository(User).save(userData);
-
-	bcrypt.genSalt(SALT_ROUNDS, function (err: Error, salt: string) {
-		bcrypt.hash(password, salt, async function (err: Error, hash: string) {
-			const userData = {
-				email,
-				passwordHash: hash,
-				passwordSalt: salt
-			};
-
-			await em.getRepository(User).save(userData);
-		});
-	});
+	console.log(JSON.stringify(user));
 
 	return user;
+}
+
+export async function checkLogin(
+	username: string,
+	password: string
+): Promise<User> {
+	const em = await createEntityManager();
+	const existingUser = await em.getRepository(User).findOne({ username });
+
+	if (!existingUser) {
+		throw new UserDoesNotExistError();
+	}
+
+	if (bcrypt.compareSync(password, existingUser.passwordHash)) {
+		return existingUser;
+	}
+
+	throw new BadPasswordError();
 }
 
 export async function getUserByUsername(

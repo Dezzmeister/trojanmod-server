@@ -204,3 +204,134 @@ marquee {
 	background-size: 100px 200px;
 	background-repeat: repeat;
 }
+
+.noborder {
+	border: 0;
+}
+
+.nobg {
+	background: rgba(0, 0, 0, 0);
+}
+
+.nopadding {
+	padding: 0;
+}
+
+.nomargin {
+	margin: 0;
+}
+
+.imagecontainer {
+	position: relative;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+.top-absolute {
+	position: absolute;
+	top: 50px;
+}
+
+.bottom-absolute {
+	position: absolute;
+	bottom: 50px;
+}
+
+.bigtext {
+	font-size: 3em;
+}
+
+.imagecontainer marquee.spamtext,
+.rainbow-spam-text {
+	background-image: linear-gradient(
+		to left,
+		violet,
+		blue,
+		green,
+		yellow,
+		red
+	);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+}
+
+.obama-spam-text {
+	background-image: url("https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg");
+	background-size: 100px 200px;
+	background-repeat: repeat;
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+}
+
+.imagecontainer marquee.spamtext {
+	position: absolute;
+	font-size: 2em;
+	bottom: 50px;
+	left: 0px;
+	width: 100%;
+}
+
+.imagecontainer h2.spamtext {
+	position: absolute;
+	color: black;
+	font-weight: bold;
+	font-size: 3em;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+}
+
+.blinking {
+	animation: blinker 1s linear infinite;
+	-webkit-animation: blinker 1s linear infinite;
+	-moz-animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 0;
+	}
+	50.01% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@-webkit-keyframes blinker {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 0;
+	}
+	50.01% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@-moz-keyframes blinker {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 0;
+	}
+	50.01% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 1;
+	}
+}

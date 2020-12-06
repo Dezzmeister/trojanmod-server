@@ -1,6 +1,8 @@
 <link rel="stylesheet" type="text/css" href="./views.css" />
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 <script>
     document.body.onload = onInputChanged;
+    let usernameIsTaken = false;
 
     function setAttribute(element, attrName, shouldHaveAttr) {
         if (shouldHaveAttr) {
@@ -10,47 +12,83 @@
         }
     }
 
-    function onInputChanged() {
+    function getInputFields() {
         const username = document.getElementById("username");
         const password = document.getElementById("password");
         const firstName = document.getElementById("first_name");
         const lastName = document.getElementById("last_name");
+
+        return {
+            username,
+            password,
+            firstName,
+            lastName
+        };
+    }
+
+    function canSubmit() {
+        const { username, password, firstName, lastName } = getInputFields();
+
+        return username.value && !usernameIsTaken && password.value && firstName.value && lastName.value;
+    }
+
+    function onInputChanged() {
         const submitButton = document.getElementById("submit-button");
 
-        const canSubmit = username.value && checkUsername(username.value) && password.value && firstName.value && lastName.value;
-        setAttribute(submitButton, "disabled", !canSubmit);
+        setAttribute(submitButton, "disabled", !canSubmit());
+    }
+
+    function usernameReqSuccess(data, status, jqXHR) {
+        if (data === "true") {
+            usernameIsTaken = true;
+        } else {
+            usernameIsTaken = false;
+        }
+        console.log(data);
+
+        const isTakenError = document.getElementById("username-taken-error");
+        const usernameField = document.getElementById("username");
+
+        setAttribute(usernameField, "haserror", usernameIsTaken);
+        setAttribute(isTakenError, "hidden", !usernameIsTaken);
+    }
+
+    function usernameReqError(jqXHR, status, error) {
+        console.log(`Something went wrong while checking the supplied username: ${error}`);
     }
 
     function checkUsername(username) {
-        const usernameField = document.getElementById("username");
-        const isTakenError = document.getElementById("username-taken-error");
+        onInputChanged();
 
-        const username = usernameField.value;
-
-        if (!username.value) {
+        if (!username) {
             return false;
         }
 
+        // Make AJAX request to see if username is taken
         const querySafeUsername = window.btoa(username);
-        const request = new XMLHttpRequest();
-
-        // TODO: Make AJAX request to see if username is taken
-        const isTaken = document.getElementById("first_name").value === "test";
-
-        setAttribute(usernameField, "haserror", isTaken);
-        setAttribute(isTakenError, "hidden", !isTaken);
-
-        return !isTaken;
+        $.ajax({
+            type: "GET",
+            url: "{{usernameIsTakenUrl}}",
+            data: { name: querySafeUsername },
+            dataType: "text",
+            success: usernameReqSuccess,
+            error: usernameReqError
+        });
     }
+
+    function freeCamel() {
+        window.alert("pls try again soon!\ncamels r out of stock");
+    }
+
 </script>
-<div class="page-row centered annoying-gradient">
+<div class="page-col centered annoying-gradient">
     <div class="action-box">
         <h2>create an accounts</h2>
         <hr style="width: 100%">
         <form name="register" method="POST" id="register-form" class="standard-form">
             <label for="username">Username</label>
-            <input type="text" name="username" id="username" required oninput="onInputChanged();" onchange="checkUsername(this.value);" />
-            <div class="errortext" id="username-taken-error" hidden>This username is taken!</div>
+            <input type="text" name="username" id="username" required oninput="checkUsername(this.value);" />
+            <div class="errortext" id="username-taken-error" hidden {{usernameTaken}}>This username is taken!</div>
 
             <label for="password">Password</label>
             <input type="password" name="password" id="password" required oninput="onInputChanged();" />
@@ -64,5 +102,12 @@
             <button type="submit" name="register" id="submit-button" class="submit-button" disabled>create accounte</button>
             <button type="button" class="submit-button" onclick="window.location.href='/'">back</button>
         </form>
+    </div>
+    <div class="imagecontainer">
+        <button class="nopadding nomargin nobg noborder" onclick="freeCamel();" id="spambtn">
+            <img src="https://i0.wp.com/www.arabamerica.com/wp-content/uploads/2018/05/Picture2.png" />
+            <h2 class="spamtext blinking">CLICK TO DOWNLOAD FREE CAMEL</h2>
+            <marquee class="spamtext" truespeed scrolldelay=10>FREE 100% WORKING 2020</marquee>
+        </button>
     </div>
 </div>

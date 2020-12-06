@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import { config } from "./config";
 import { DEFAULT_ROUTE, LOGIN_ROUTE, REGISTER_ROUTE } from "./routes";
-import { authTokenMiddleware } from "./auth";
+import { jwtMiddleware } from "./auth";
 import addRoutes from "./add_routes";
 import { initDatabase } from "./services/database";
 
@@ -25,7 +25,7 @@ app.engine(
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
-app.use(authTokenMiddleware);
+app.use(jwtMiddleware);
 
 app.use(express.static(VIEWS_DIR));
 app.use(express.static(PAYLOAD_DIR));
@@ -45,6 +45,8 @@ addRoutes(app);
 
 initDatabase(config.database.dbName);
 
-app.listen(config.port, function () {
-	console.log(`Trojan Control Server listening on port ${config.port}`);
+app.listen(config.server.port, function () {
+	console.log(
+		`Trojan Control Server listening on port ${config.server.port}`
+	);
 });
