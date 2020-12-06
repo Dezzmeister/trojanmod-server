@@ -34,7 +34,7 @@ export async function createUser(data: UserData): Promise<User> {
 	const em = await createEntityManager();
 
 	const existingUser = await em.getRepository(User).findOne({ username });
-	if (existingUser || bannedNames.includes(name)) {
+	if (existingUser || bannedNames.includes(username)) {
 		throw new UserExistsError();
 	}
 
