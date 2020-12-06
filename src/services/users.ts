@@ -6,6 +6,7 @@ import {
 	UserExistsError
 } from "../errors/user_errors";
 import { createEntityManager } from "./database";
+import { bannedNames } from "./names";
 
 export interface UserData {
 	username: string;
@@ -33,13 +34,11 @@ export async function createUser(data: UserData): Promise<User> {
 	const em = await createEntityManager();
 
 	const existingUser = await em.getRepository(User).findOne({ username });
-	console.log(JSON.stringify(existingUser));
-	if (existingUser) {
+	if (existingUser || bannedNames.includes(name)) {
 		throw new UserExistsError();
 	}
 
 	const user = await em.getRepository(User).save(userData);
-	console.log(JSON.stringify(user));
 
 	return user;
 }

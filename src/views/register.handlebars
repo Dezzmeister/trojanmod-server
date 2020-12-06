@@ -44,13 +44,14 @@
         } else {
             usernameIsTaken = false;
         }
-        console.log(data);
 
         const isTakenError = document.getElementById("username-taken-error");
         const usernameField = document.getElementById("username");
 
         setAttribute(usernameField, "haserror", usernameIsTaken);
         setAttribute(isTakenError, "hidden", !usernameIsTaken);
+
+        onInputChanged();
     }
 
     function usernameReqError(jqXHR, status, error) {
