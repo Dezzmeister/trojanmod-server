@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Role, User } from "../entity/User";
 import {
 	BadPasswordError,

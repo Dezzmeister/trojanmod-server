@@ -17,7 +17,7 @@
     "start:dev": "yarn run build:dev && node dist/server/app.js",
     "start:watch": "nodemon",
     "migration:generate": "yarn run build:dev && node ./node_modules/typeorm/cli.js migration:generate -f ormconfig.json -c obama69",
-    "migrate": "yarn run build:dev && node ./node_modules/typeorm/cli.js migration:run -f ormconfig.json -c obama69",
+    "migrate": "node ./node_modules/typeorm/cli.js migration:run -f ormconfig.json -c obama69",
     "migrate:revert": "yarn run build:dev && node ./node_modules/typeorm/cli.js migration:revert -f ormconfig.json -c obama69"
   },
   "nodemonConfig": {
@@ -33,14 +33,14 @@
   },
   "dependencies": {
     "@types/base64url": "^2.0.0",
-    "@types/bcrypt": "^3.0.0",
+    "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/express-handlebars": "^3.1.0",
     "@types/express-validator": "^3.0.0",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/multer": "^1.4.4",
     "base64url": "^3.0.1",
-    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express-handlebars": "^5.2.0",
