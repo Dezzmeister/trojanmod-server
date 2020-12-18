@@ -1,0 +1,1 @@
+Call MsgBox("u have infect with viruse!", 1 Or 48, "important alert!!!")

@@ -13,6 +13,7 @@ public class ArbitraryTestClass {
 	 * 
 	 * @return can return anything, it doesn't matter
 	 */
+	@Override
 	public String toString() {
 		System.out.println("Some arbitrary code has just been executed.");
 		
@@ -25,6 +26,7 @@ public class ArbitraryTestClass {
 	 * @param other can be anything
 	 * @return can return anything
 	 */
+	@Override
 	public boolean equals(Object other) {
 		System.out.println("Thank you for letting me mine some bitcoin.");
 		
