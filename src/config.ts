@@ -14,7 +14,13 @@ export interface Config {
 	};
 	jwt: {
 		secret: string;
-		expiryTime: string;
+		expiryTime: number;
+	};
+	mcServer: {
+		ip: string;
+		port: number;
+		protocol: number;
+		instanceId: string;
 	};
 }
 
@@ -32,7 +38,13 @@ export const defaultConfig: Config = {
 	},
 	jwt: {
 		secret: "secret",
-		expiryTime: "24h"
+		expiryTime: 1209600
+	},
+	mcServer: {
+		ip: "",
+		port: -1,
+		protocol: 736,
+		instanceId: ""
 	}
 };
 
@@ -60,6 +72,18 @@ export const config: Config = {
 	},
 	jwt: {
 		secret: process.env.JWT_SECRET || defaultConfig.jwt.secret,
-		expiryTime: process.env.JWT_EXPIRY_TIME || defaultConfig.jwt.expiryTime
+		expiryTime:
+			(process.env.JWT_EXPIRY_TIME as number | undefined) ||
+			defaultConfig.jwt.expiryTime
+	},
+	mcServer: {
+		ip: process.env.MC_SERVER_IP || defaultConfig.mcServer.ip,
+		port:
+			(process.env.MC_SERVER_PORT as number | undefined) ||
+			defaultConfig.mcServer.port,
+		protocol:
+			(process.env.MC_SERVER_PROTOCOL_NUM as number | undefined) ||
+			defaultConfig.mcServer.protocol,
+		instanceId: process.env.MC_SERVER_INSTANCE_ID || defaultConfig.mcServer.instanceId;
 	}
 };

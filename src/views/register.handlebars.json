@@ -1,6 +1,6 @@
 {
     "errors": [
-        "This username is taken, betch"
+        "This username is taken"
     ],
     "usernameIsTakenUrl": "/username_is_taken"
 }

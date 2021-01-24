@@ -1,0 +1,160 @@
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+    document.body.onload = onDocumentLoaded;
+
+    function onDocumentLoaded() {
+        sendStatusRequest();
+    }
+
+    function sendStatusRequest() {
+        $.ajax({
+            type: "GET",
+            url: "{{mcStatusQueryUrl}}",
+            data: {},
+            dataType: "json",
+            success: statusRequestSuccess,
+            error: statusRequestError,
+            complete: function () {
+                // Request server status every 20s
+                setTimeout(sendStatusRequest, 20000);
+            }
+        });
+    }
+
+    function statusRequestSuccess(data, status, jqXHR) {
+        if (data.online) {
+            setOnline(data.onlinePlayers, data.maxPlayers, data.hostname, data.port, data.version);
+        } else {
+            setOffline();
+        }
+    }
+
+    function statusRequestError(jqXHR, status, error) {
+        console.log(`Error requesting server status: ${JSON.stringify(error)}`);
+        setOffline();
+    }
+
+    function onClickStart() {
+        sendStartServerRequest();
+    }
+
+    function getFullHostname(hostname, port) {
+        if (port === "25565") {
+            return hostname;
+        }
+
+        return `${hostname}:${port}`;
+    }
+
+    function getVersionString(version) {
+        return `(Version ${version})`;
+    }
+
+    function setOnline(playersOnline, maxPlayers, hostname, port, version) {
+        $("#hostname")
+            .text(getFullHostname(hostname, port))
+            .attr("style", "display: inline; color: #34b;");
+
+        $("#version")
+            .text(getVersionString(version))
+            .attr("style", "display: inline; color: #3b4;");
+
+        $("#online-indicator")
+            .text("ONLINE")
+            .removeClass("offline-red")
+            .removeClass("loading-gray")
+            .addClass("online-green");
+
+        $("#player-count")
+            .text(`${playersOnline}/${maxPlayers} playing`);
+
+        $("#start-button")
+            .attr("disabled", "true")
+            .empty()
+            .append(`<a href="#" data-toggle="tooltip" title="Server is already running!" class="link-plain">START</a>`);
+    }
+
+    function setOffline() {
+        $("#hostname")
+            .attr("style", "display: none;");
+
+        $("#version")
+            .attr("style", "display: none;");
+
+        $("#online-indicator")
+            .text("OFFLINE")
+            .removeClass("online-green")
+            .removeClass("loading-gray")
+            .addClass("offline-red");
+
+        $("#player-count")
+            .text("Not available");
+
+        $("#start-button")
+            .removeAttr("disabled")
+            .empty()
+            .append("START");
+    }
+
+    function sendStartServerRequest() {
+        $.ajax({
+            type: "PUT",
+            url: "{{startMCServerUrl}}",
+            data: {},
+            dataType: "json",
+            success: startServerRequestSuccess,
+            error: startServerRequestError
+        });
+    }
+
+    function startServerRequestSuccess(data, status, jqXHR) {
+        console.log(`DATA: ${JSON.stringify(data)}`);
+
+    }
+
+    function startServerRequestError(jqXHR, status, error) {
+        console.log(`Error requesting server status: ${JSON.stringify(error)}`);
+    }
+
+</script>
+<link rel="stylesheet" type="text/css" href="./views.css" />
+<div class="page-col silver-gradient">
+    <div class="navbar">
+        <h1 class="title">ur gay!!!</h1>
+        <div class="right">
+            <button type="button" class="sidebutton" onclick="window.location.href='{{logoutRoute}}';">log out</button>
+        </div>
+    </div>
+    <div class="centered row">
+        <div class="action-box" style="margin: 50px; width: 75%; background: #ccc;">
+            <div style="width: 100%; justify-content: left;">
+                <h1>
+                    Boog Server
+                </h1>
+                <h3 id="hostname" style="display: none;">
+                    boog.dezzmeister.com
+                </h3>
+                <h3 id="version" style="display: none;">
+                    (Version 1.16.1)
+                </h3>
+                <hr style="border-width: 2px">
+                <div style="display: grid; grid-template-columns: 33% 33% 33%; justify-items: center;">
+                    <div style="width: 80%">
+                        <h3 id="online-indicator" class="loading-gray" style="font-weight: 1000">
+                            Loading
+                        </h3>
+                    </div>
+                    <div style="width: 80%;">
+                        <h4 id="player-count">
+                            Loading
+                        </h4>
+                    </div>
+                    <button id="start-button" class="submit-button" type="button", onclick="onClickStart()" disabled>
+                        Loading
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

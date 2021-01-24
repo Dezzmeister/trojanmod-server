@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { Role, User } from "../entity/User";
+import { User } from "../entity/User";
 import {
 	BadPasswordError,
 	UserDoesNotExistError,
@@ -28,14 +28,14 @@ export async function createUser(data: UserData): Promise<User> {
 		firstName,
 		lastName,
 		passwordHash: hash,
-		role: Role.USER
+		permissions: []
 	};
 
 	const em = await createEntityManager();
 
 	const existingUser = await em.getRepository(User).findOne({ username });
 	if (existingUser || bannedNames.includes(username)) {
-		throw new UserExistsError();
+		throw new UserExistsError(`Username '${username}' is taken`);
 	}
 
 	const user = await em.getRepository(User).save(userData);
@@ -51,14 +51,14 @@ export async function checkLogin(
 	const existingUser = await em.getRepository(User).findOne({ username });
 
 	if (!existingUser) {
-		throw new UserDoesNotExistError();
+		throw new UserDoesNotExistError("User does not exist");
 	}
 
 	if (bcrypt.compareSync(password, existingUser.passwordHash)) {
 		return existingUser;
 	}
 
-	throw new BadPasswordError();
+	throw new BadPasswordError("Bad password");
 }
 
 export async function getUserByUsername(
