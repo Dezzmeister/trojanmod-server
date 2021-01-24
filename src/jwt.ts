@@ -15,6 +15,7 @@ import {
 	REGISTER_ROUTE,
 	SET_PAYLOAD_ROUTE,
 	START_MC_SERVER_ROUTE,
+	STOP_MC_SERVER_ROUTE,
 	UPLOAD_PAYLOAD_ROUTE,
 	USERNAME_IS_TAKEN_ROUTE
 } from "./routes";
@@ -44,6 +45,7 @@ function buildJwtPaths(): { [key: string]: Strictness } {
 	obj[QUERY_MC_SERVER_ROUTE] = Strictness.NOT_REQUIRED;
 	obj[MC_SERVER_CONSOLE_ROUTE] = Strictness.REQUIRED;
 	obj[START_MC_SERVER_ROUTE] = Strictness.REQUIRED;
+	obj[STOP_MC_SERVER_ROUTE] = Strictness.REQUIRED;
 
 	return obj;
 }

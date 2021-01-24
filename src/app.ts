@@ -14,6 +14,7 @@ import addRoutes from "./add_routes";
 import { initDatabase } from "./services/database";
 import { logger, loggingMiddleware } from "./logging";
 import { hasPermission, PERMISSIONS } from "./services/permissions";
+import { startServerControlCron } from "./services/aws";
 
 export const app: Application = express();
 
@@ -63,4 +64,6 @@ app.listen(config.server.port, function () {
 	logger.info(
 		`Trojan Control Server listening on port ${config.server.port}`
 	);
+	logger.info("Starting server control cron job...");
+	startServerControlCron();
 });
