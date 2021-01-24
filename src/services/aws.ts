@@ -6,15 +6,18 @@ import { logger } from "../logging";
 
 const serverInstance = new AWS.EC2({ region: "us-east-1" });
 let lastUptime = Date.now();
-let hasShutdown = true;
+let hasShutdown = false;
 
 export async function startInstance() {
+	hasShutdown = false;
 	await serverInstance.startInstances({
 		InstanceIds: [config.mcServer.instanceId]
 	});
 }
 
 export async function stopInstance() {
+	hasShutdown = true;
+
 	await serverInstance.stopInstances({
 		InstanceIds: [config.mcServer.instanceId]
 	});
