@@ -31,7 +31,7 @@ export function startServerControlCron() {
 			3000
 		)
 			.then((response: any) => {
-				if (response.onlinePlayers !== 0) {
+				if (response.players.online !== 0) {
 					shouldShutdown = false;
 				} else {
 					if (shouldShutdown) {
