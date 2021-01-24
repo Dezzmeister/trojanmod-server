@@ -32,18 +32,20 @@ export function startServerControlCron() {
 			3000
 		)
 			.then((response: any) => {
-				if (response.onlinePlayers !== 0) {
+				if (
+					response.onlinePlayers !== undefined &&
+					response.onlinePlayers !== 0
+				) {
 					lastUptime = Date.now();
 					hasShutdown = false;
-				} else if (
-					!hasShutdown &&
-					Date.now() - lastUptime > 5 * 60 * 1000
-				) {
+				} else if (!hasShutdown) {
 					logger.info("MC Server is inactive. Shutting down...");
 					stopInstance();
 					hasShutdown = true;
 				}
 			})
-			.catch((error: any) => {});
+			.catch((error: any) => {
+				logger.error(JSON.stringify(error));
+			});
 	});
 }
