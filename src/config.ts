@@ -84,6 +84,8 @@ export const config: Config = {
 		protocol:
 			(process.env.MC_SERVER_PROTOCOL_NUM as number | undefined) ||
 			defaultConfig.mcServer.protocol,
-		instanceId: process.env.MC_SERVER_INSTANCE_ID || defaultConfig.mcServer.instanceId;
+		instanceId:
+			process.env.MC_SERVER_INSTANCE_ID ||
+			defaultConfig.mcServer.instanceId
 	}
 };
