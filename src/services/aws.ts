@@ -5,18 +5,17 @@ const { MinecraftServerListPing } = require("minecraft-status");
 import { logger } from "../logging";
 
 const serverInstance = new AWS.EC2({ region: "us-east-1" });
-let lastUptime = Date.now();
-let hasShutdown = false;
+let shouldShutdown = false;
 
 export async function startInstance() {
-	hasShutdown = false;
+	shouldShutdown = false;
 	await serverInstance.startInstances({
 		InstanceIds: [config.mcServer.instanceId]
 	});
 }
 
 export async function stopInstance() {
-	hasShutdown = true;
+	shouldShutdown = false;
 
 	await serverInstance.stopInstances({
 		InstanceIds: [config.mcServer.instanceId]
@@ -32,16 +31,15 @@ export function startServerControlCron() {
 			3000
 		)
 			.then((response: any) => {
-				if (
-					response.onlinePlayers !== undefined &&
-					response.onlinePlayers !== 0
-				) {
-					lastUptime = Date.now();
-					hasShutdown = false;
-				} else if (!hasShutdown) {
-					logger.info("MC Server is inactive. Shutting down...");
-					stopInstance();
-					hasShutdown = true;
+				if (response.onlinePlayers !== 0) {
+					shouldShutdown = false;
+				} else {
+					if (shouldShutdown) {
+						logger.info("MC Server is inactive. Shutting down...");
+						stopInstance();
+					} else {
+						shouldShutdown = true;
+					}
 				}
 			})
 			.catch((error: any) => {
