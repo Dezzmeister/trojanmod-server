@@ -42,8 +42,6 @@ export function startServerControlCron() {
 					}
 				}
 			})
-			.catch((error: any) => {
-				logger.error(JSON.stringify(error));
-			});
+			.catch((error: any) => {});
 	});
 }
