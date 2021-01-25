@@ -28,7 +28,7 @@ export function startServerControlCron() {
 			config.mcServer.protocol,
 			config.mcServer.ip,
 			config.mcServer.port,
-			3000
+			15000
 		)
 			.then((response: any) => {
 				if (response.players.online !== 0) {
@@ -42,6 +42,9 @@ export function startServerControlCron() {
 					}
 				}
 			})
-			.catch((error: any) => {});
+			.catch((error: any) => {
+				logger.info("MC Server likely crashed. Shutting down...");
+				stopInstance();
+			});
 	});
 }
