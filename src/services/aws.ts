@@ -4,26 +4,73 @@ import * as cron from "node-cron";
 const { MinecraftServerListPing } = require("minecraft-status");
 import { logger } from "../logging";
 
+const enum ServerStatus {
+	ACTIVE,
+	INACTIVE,
+	NOT_RESPONDING
+}
+
+const POLL_TIME_MINUTES = 5;
+
 const serverInstance = new AWS.EC2({ region: "us-east-1" });
-let shouldShutdown = false;
+
+let previousStatus = ServerStatus.NOT_RESPONDING;
+let shouldBeRunning = false;
 
 export async function startInstance() {
-	shouldShutdown = false;
-	await serverInstance.startInstances({
-		InstanceIds: [config.mcServer.instanceId]
-	});
+	shouldBeRunning = true;
+
+	try {
+		await serverInstance.startInstances({
+			InstanceIds: [config.mcServer.instanceId]
+		});
+	} catch (e: any) {
+		logger.error(`Error starting server: ${JSON.stringify(e)}`);
+	}
 }
 
 export async function stopInstance() {
-	shouldShutdown = false;
+	shouldBeRunning = false;
+	previousStatus === ServerStatus.NOT_RESPONDING;
 
-	await serverInstance.stopInstances({
-		InstanceIds: [config.mcServer.instanceId]
-	});
+	try {
+		await serverInstance.stopInstances({
+			InstanceIds: [config.mcServer.instanceId]
+		});
+	} catch (e: any) {
+		logger.error(`Error stopping server: ${JSON.stringify(e)}`);
+	}
+}
+
+function updateServerWithStatus(status: ServerStatus) {
+	switch (status) {
+		case ServerStatus.ACTIVE: {
+			previousStatus = ServerStatus.ACTIVE;
+		}
+		case ServerStatus.INACTIVE: {
+			if (
+				previousStatus === ServerStatus.ACTIVE ||
+				previousStatus === ServerStatus.NOT_RESPONDING
+			) {
+				previousStatus = ServerStatus.INACTIVE;
+			} else {
+				logger.info("MC Server is inactive. Shutting down...");
+				stopInstance();
+			}
+			return;
+		}
+		case ServerStatus.NOT_RESPONDING: {
+			if (shouldBeRunning) {
+				// The server crashed
+				logger.info("MC Server likely crashed. Shutting down...");
+				stopInstance();
+			}
+		}
+	}
 }
 
 export function startServerControlCron() {
-	cron.schedule("*/5 * * * *", function () {
+	cron.schedule(`*/${POLL_TIME_MINUTES} * * * *`, function () {
 		MinecraftServerListPing.ping(
 			config.mcServer.protocol,
 			config.mcServer.ip,
@@ -32,19 +79,13 @@ export function startServerControlCron() {
 		)
 			.then((response: any) => {
 				if (response.players.online !== 0) {
-					shouldShutdown = false;
+					updateServerWithStatus(ServerStatus.ACTIVE);
 				} else {
-					if (shouldShutdown) {
-						logger.info("MC Server is inactive. Shutting down...");
-						stopInstance();
-					} else {
-						shouldShutdown = true;
-					}
+					updateServerWithStatus(ServerStatus.INACTIVE);
 				}
 			})
 			.catch((error: any) => {
-				logger.info("MC Server likely crashed. Shutting down...");
-				stopInstance();
+				updateServerWithStatus(ServerStatus.NOT_RESPONDING);
 			});
 	});
 }
