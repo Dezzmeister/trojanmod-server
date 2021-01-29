@@ -11,14 +11,17 @@ const enum ServerStatus {
 }
 
 const POLL_TIME_MINUTES = 5;
+const SERVER_CRASH_TIMEOUT = 6;
 
 const serverInstance = new AWS.EC2({ region: "us-east-1" });
 
 let previousStatus = ServerStatus.NOT_RESPONDING;
 let shouldBeRunning = false;
+let startedAt = 0;
 
 export async function startInstance() {
 	shouldBeRunning = true;
+	startedAt = Date.now();
 
 	try {
 		await serverInstance.startInstances({
@@ -60,7 +63,10 @@ function updateServerWithStatus(status: ServerStatus) {
 			return;
 		}
 		case ServerStatus.NOT_RESPONDING: {
-			if (shouldBeRunning) {
+			if (
+				shouldBeRunning &&
+				Date.now() - startedAt >= SERVER_CRASH_TIMEOUT
+			) {
 				// The server crashed
 				logger.info("MC Server likely crashed. Shutting down...");
 				stopInstance();
